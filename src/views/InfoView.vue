@@ -72,7 +72,7 @@ const textSpring = {
 
       <router-link
           to="/"
-          class="flex flex-shrink-0 items-center justify-center w-11 h-11 rounded-full bg-white/70 backdrop-blur-md border border-gray-300 shadow-sm hover:bg-red-50 hover:border-red-300 hover:text-red-600 text-gray-700 transition-colors"
+          class="flex flex-shrink-0 items-center justify-center w-11 h-11 rounded-full bg-white/80 backdrop-blur-md border border-gray-300 shadow-[0_8px_8px_rgba(31,38,135,0.04)] hover:bg-red-50 hover:border-red-300 hover:text-red-600 text-gray-700 transition-colors"
       >
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
@@ -104,18 +104,18 @@ const textSpring = {
         >
           <router-link
               :to="link.path"
-              class="relative flex items-center justify-center outline-none overflow-hidden backdrop-blur-md group transition-colors duration-300"
+              class="relative flex items-center justify-center outline-none overflow-hidden backdrop-blur-md group transition duration-150 "
               :class="[
                 route.path.includes(link.path)
                   ? link.activeTextClass
-                  : 'text-gray-700' // Іконки сірі, коли неактивні
+                  : (isBaseRoute ?'text-gray-700 hover:scale-103 shadow-[0_8px_8px_rgba(31,38,135,0.04)]' : 'text-gray-700 hover:scale-107 ' )
               ]"
               :style="{
                 borderRadius: isBaseRoute ? '20px' : '9999px'
               }"
           >
             <motion.div
-                class="absolute inset-0 border transition-colors duration-300"
+                class="absolute inset-0 border transition duration-300 ease-in-out"
                 :class="[
                   route.path.includes(link.path)
                     ? `${link.activeBgClass} shadow-sm`
