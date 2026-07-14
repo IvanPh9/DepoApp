@@ -20,6 +20,17 @@ const router = createRouter({
                     component: () => import('../components/DriversList.vue')
                 },
                 {
+                    path: 'drivers/add',
+                    name: 'driver-add',
+                    component: () => import('../components/AddDriver.vue')
+                },
+                {
+                    path: 'drivers/:id',
+                    name: 'driver-profile',
+                    component: () => import('../components/DriverProfile.vue'),
+                    props: true
+                },
+                {
                     path: 'stops',
                     component: () => import('../components/StopsList.vue')
                 },

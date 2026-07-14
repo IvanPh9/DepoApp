@@ -2,6 +2,24 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { motion, AnimatePresence } from 'motion-v'
+import SvgIcon from '@/components/ui/SvgIcon.vue'
+import { useDriversStore } from '@/stores/drivers'
+import { useVehiclesStore } from '@/stores/vehicles'
+
+const driversStore = useDriversStore()
+const vehiclesStore = useVehiclesStore()
+
+const isDeleteMode = computed(() => {
+  if (isDriversPage.value) return driversStore.isDeleteMode
+  if (isVehiclesPage.value) return vehiclesStore.isDeleteMode
+  return false
+})
+const isAssignRouteMode = computed(() => {
+  if (isDriversPage.value) return driversStore.isAssignRouteMode
+  if (isVehiclesPage.value) return vehiclesStore.isAssignRouteMode
+  return false
+})
+const isAddDriverModalOpen = computed(() => driversStore.isAddDriverModalOpen)
 
 // Розділив activeClass на activeBgClass та activeTextClass для правильного успадкування кольору іконками
 const navLinks = [
@@ -10,45 +28,91 @@ const navLinks = [
     label: 'Водії',
     activeBgClass: 'bg-blue-50/80 border-blue-400',
     activeTextClass: 'text-blue-700',
-    viewBox: '0 0 19.9072 17.3848',
-    iconPath: '<path d="M6.43359 2.32031V3.18164H13.4824V2.32031C13.4824 1.9248 13.21 1.66992 12.7705 1.66992H7.13672C6.70605 1.66992 6.43359 1.9248 6.43359 2.32031ZM9.94922 8.49902C6.49512 8.49902 3.19922 7.97168 0 6.63574V5.99414C0 4.13965 0.966797 3.18164 2.83887 3.18164H4.60547V2.24121C4.60547 0.834961 5.51074 0 7.02246 0H12.8848C14.3965 0 15.3018 0.834961 15.3018 2.24121V3.18164H17.0684C18.9492 3.18164 19.9072 4.13965 19.9072 5.99414V6.63574C16.708 7.97168 13.4121 8.49902 9.94922 8.49902ZM2.83887 17.3848C0.966797 17.3848 0 16.4355 0 14.5723V8.30566C2.67188 9.28125 5.08008 9.73828 7.51465 9.92285V10.6172C7.51465 11.2852 7.90137 11.6543 8.57812 11.6543H11.3203C12.0059 11.6543 12.3926 11.2852 12.3926 10.6172V9.92285C14.8271 9.73828 17.2354 9.28125 19.9072 8.30566V14.5723C19.9072 16.4355 18.9492 17.3848 17.0684 17.3848H2.83887Z" />'
+    icon: 'drivers'
   },
   {
     path: '/base/vehicle',
     label: 'Транспортні засоби',
     activeBgClass: 'bg-sky-50/80 border-sky-400',
     activeTextClass: 'text-sky-700',
-    viewBox: '0 0 20.0215 20.9883',
-    iconPath: '<path d="M2.6543 20.9883H3.70898C4.47363 20.9883 4.99219 20.4697 4.99219 19.7139V18.3252C6.67969 18.4482 8.37598 18.5098 10.0107 18.5098C11.6455 18.5098 13.3418 18.457 15.0293 18.3252V19.7139C15.0293 20.4697 15.5479 20.9883 16.3125 20.9883H17.376C18.1406 20.9883 18.6592 20.4697 18.6592 19.7139V8.85938H19.0547C19.6172 8.85938 20.0215 8.49023 20.0215 7.96289V4.30664C20.0215 3.77051 19.6172 3.41016 19.0547 3.41016H18.6592V2.49609C18.6592 1.26562 17.9561 0.518555 16.6641 0.351562C14.8271 0.123047 12.4102 0 10.0107 0C7.61133 0 5.21191 0.114258 3.35742 0.351562C2.07422 0.527344 1.3623 1.26562 1.3623 2.49609V3.41016H0.966797C0.404297 3.41016 0 3.77051 0 4.30664V7.96289C0 8.49023 0.404297 8.85938 0.966797 8.85938H1.3623V19.7139C1.3623 20.4697 1.88086 20.9883 2.6543 20.9883ZM4.08691 12.3574C3.50684 12.2607 3.2168 11.918 3.2168 11.2764V3.26074C3.2168 2.54883 3.54199 2.1709 4.19238 2.0918C7.60254 1.67871 12.3926 1.69629 15.8467 2.0918C16.4971 2.1709 16.8135 2.54883 16.8135 3.26074V11.2764C16.8135 11.9268 16.5234 12.2695 15.9434 12.3574C12.4805 12.8848 7.4707 12.9023 4.08691 12.3574ZM4.6582 16.3477C3.99902 16.3477 3.50684 15.8555 3.50684 15.2051C3.50684 14.5459 3.99902 14.0537 4.6582 14.0537C5.30859 14.0537 5.80078 14.5459 5.80078 15.2051C5.80078 15.8555 5.30859 16.3477 4.6582 16.3477ZM15.3721 16.3477C14.7129 16.3477 14.2207 15.8555 14.2207 15.2051C14.2207 14.5459 14.7129 14.0537 15.3721 14.0537C16.0225 14.0537 16.5234 14.5459 16.5234 15.2051C16.5234 15.8555 16.0225 16.3477 15.3721 16.3477ZM8.09473 15.9961C7.62012 15.9961 7.28613 15.6621 7.28613 15.1875C7.28613 14.7129 7.62012 14.3877 8.09473 14.3877H11.9092C12.3838 14.3877 12.7266 14.7129 12.7266 15.1875C12.7266 15.6621 12.3838 15.9961 11.9092 15.9961H8.09473Z">'
+    icon: 'vehicle'
   },
   {
     path: '/base/stops',
     label: 'Зупинки',
     activeBgClass: 'bg-teal-50/80 border-teal-400',
     activeTextClass: 'text-teal-700',
-    viewBox: '0 0 15.7101 27.4289',
-    iconPath: '<path d="M5.78869 27.4289C6.5345 27.4289 7.07691 26.9543 7.07691 26.0616V17.3943C7.07691 17.0101 7.25772 16.7841 7.56282 16.7841C7.86793 16.7841 8.06003 17.0101 8.06003 17.3943V26.0616C8.06003 26.9543 8.60244 27.4289 9.34826 27.4289C10.0828 27.4289 10.6252 26.9543 10.6252 26.0616V11.4165C10.6252 11.1114 10.7721 10.9306 11.0207 10.9306C11.258 10.9306 11.4162 11.1114 11.4162 11.4165V17.4282C11.4162 18.2305 11.8908 18.6825 12.5688 18.6825C13.2468 18.6825 13.7101 18.2305 13.7101 17.4282V11.5521C13.7101 7.9699 11.6874 7.04328 7.67583 7.04328H5.93559C5.15588 7.04328 4.76037 6.93027 4.13885 6.47827L2.64723 5.42735L2.37602 1.20106C2.31952 0.387446 1.79971 -0.0419624 1.1217 0.00323846C0.432382 0.0371391 -0.0422274 0.534349 0.00297345 1.33666L0.274179 5.52905C0.33068 6.44437 0.692287 6.97548 1.2573 7.39358L3.96935 9.37112C4.36486 9.65363 4.50046 10.0039 4.50046 10.4559V26.0616C4.50046 26.9543 5.05417 27.4289 5.78869 27.4289ZM7.67583 5.91325C9.17875 5.91325 10.3879 4.67023 10.3879 3.2125C10.3879 1.70957 9.17875 0.489148 7.67583 0.489148C6.16159 0.489148 4.97507 1.70957 4.97507 3.2125C4.97507 4.69283 6.16159 5.91325 7.67583 5.91325Z"/>'
+    icon: 'stops'
   },
   {
     path: '/base/route',
     label: 'Маршрути',
     activeBgClass: 'bg-slate-50/80 border-slate-400',
     activeTextClass: 'text-slate-700',
-    viewBox: '0 0 10.377 19.3184',
-    iconPath: '<path d="M5.61621 19.3184C8.97363 19.3184 11.2148 17.0771 11.2148 13.7021V12.1992C11.2148 11.6982 10.8105 11.2939 10.3184 11.2939C9.81738 11.2939 9.41309 11.6982 9.41309 12.1992V13.7021C9.41309 15.9873 7.89258 17.5166 5.61621 17.5166C3.33105 17.5166 1.80176 15.9873 1.80176 13.7021V5.60742C1.80176 3.33105 3.33105 1.81055 5.61621 1.81055C7.86621 1.81055 9.37793 3.2959 9.41309 5.5459H8.17383C7.50586 5.5459 7.3125 6.04688 7.70801 6.5918L9.77344 9.50098C10.0898 9.94922 10.582 9.94922 10.9072 9.50098L12.9814 6.60059C13.377 6.04688 13.1924 5.5459 12.5156 5.5459H11.2148C11.1885 2.21484 8.94727 0 5.61621 0C2.25 0 0 2.25 0 5.60742V13.7021C0 17.0771 2.25 19.3184 5.61621 19.3184Z">'
+    icon: 'route'
   },
   {
     path: '/base/wmode',
     label: 'Режими роботи',
     activeBgClass: 'bg-amber-50/80 border-amber-400',
     activeTextClass: 'text-amber-700',
-    viewBox: '0 0 27 23',
-    iconPath: '<path d="M0 17.3033C0 19.7031 1.24378 20.959 3.62128 20.959H15.1015C14.6943 20.2862 14.4081 19.5236 14.276 18.7275H3.61027C2.6967 18.7275 2.19038 18.2452 2.19038 17.2584V6.94149C2.19038 5.95466 2.6967 5.47245 3.61027 5.47245H18.7888C19.7024 5.47245 20.2087 5.95466 20.2087 6.94149V9.94686C20.594 9.87957 20.9572 9.84593 21.3204 9.84593C21.6837 9.84593 22.0469 9.87957 22.4101 9.93564V3.65578C22.4101 1.25597 21.1663 0 18.7778 0H3.62128C1.24378 0 0 1.24476 0 3.65578V17.3033ZM9.08072 9.3413H9.73013C10.1264 9.3413 10.2585 9.21794 10.2585 8.82545V8.16382C10.2585 7.76012 10.1264 7.63676 9.73013 7.63676H9.08072C8.68447 7.63676 8.55238 7.76012 8.55238 8.16382V8.82545C8.55238 9.21794 8.68447 9.3413 9.08072 9.3413ZM12.68 9.3413H13.3294C13.7146 9.3413 13.8467 9.21794 13.8467 8.82545V8.16382C13.8467 7.76012 13.7146 7.63676 13.3294 7.63676H12.68C12.2837 7.63676 12.1517 7.76012 12.1517 8.16382V8.82545C12.1517 9.21794 12.2837 9.3413 12.68 9.3413ZM16.2682 9.3413H16.9177C17.3139 9.3413 17.446 9.21794 17.446 8.82545V8.16382C17.446 7.76012 17.3139 7.63676 16.9177 7.63676H16.2682C15.883 7.63676 15.7509 7.76012 15.7509 8.16382V8.82545C15.7509 9.21794 15.883 9.3413 16.2682 9.3413ZM5.49246 12.9522H6.13086C6.52711 12.9522 6.65919 12.8289 6.65919 12.4252V11.7635C6.65919 11.371 6.52711 11.2477 6.13086 11.2477H5.49246C5.09621 11.2477 4.96413 11.371 4.96413 11.7635V12.4252C4.96413 12.8289 5.09621 12.9522 5.49246 12.9522ZM9.08072 12.9522H9.73013C10.1264 12.9522 10.2585 12.8289 10.2585 12.4252V11.7635C10.2585 11.371 10.1264 11.2477 9.73013 11.2477H9.08072C8.68447 11.2477 8.55238 11.371 8.55238 11.7635V12.4252C8.55238 12.8289 8.68447 12.9522 9.08072 12.9522ZM12.68 12.9522H13.3294C13.7146 12.9522 13.8467 12.8289 13.8467 12.4252V11.7635C13.8467 11.371 13.7146 11.2477 13.3294 11.2477H12.68C12.2837 11.2477 12.1517 11.371 12.1517 11.7635V12.4252C12.1517 12.8289 12.2837 12.9522 12.68 12.9522ZM21.3204 23C24.4024 23 27 20.3759 27 17.2136C27 14.0512 24.4354 11.4383 21.3204 11.4383C18.2165 11.4383 15.6519 14.0512 15.6519 17.2136C15.6519 20.3871 18.2165 23 21.3204 23ZM18.7008 18.178C18.2605 18.178 17.9193 17.8191 17.9193 17.3818C17.9193 16.9556 18.2715 16.608 18.7008 16.608H20.616V13.9839C20.616 13.5466 20.9572 13.2101 21.3865 13.2101C21.8157 13.2101 22.168 13.5466 22.168 13.9839V17.3818C22.168 17.8303 21.8267 18.178 21.3865 18.178H18.7008ZM5.49246 16.5519H6.13086C6.52711 16.5519 6.65919 16.4286 6.65919 16.0361V15.3745C6.65919 14.9707 6.52711 14.8474 6.13086 14.8474H5.49246C5.09621 14.8474 4.96413 14.9707 4.96413 15.3745V16.0361C4.96413 16.4286 5.09621 16.5519 5.49246 16.5519ZM9.08072 16.5519H9.73013C10.1264 16.5519 10.2585 16.4286 10.2585 16.0361V15.3745C10.2585 14.9707 10.1264 14.8474 9.73013 14.8474H9.08072C8.68447 14.8474 8.55238 14.9707 8.55238 15.3745V16.0361C8.55238 16.4286 8.68447 16.5519 9.08072 16.5519ZM12.68 16.5519H13.3294C13.7146 16.5519 13.8467 16.4286 13.8467 16.0361V15.3745C13.8467 14.9707 13.7146 14.8474 13.3294 14.8474H12.68C12.2837 14.8474 12.1517 14.9707 12.1517 15.3745V16.0361C12.1517 16.4286 12.2837 16.5519 12.68 16.5519Z"/>'
+    icon: 'wmode'
   },
 ]
 
 const route = useRoute()
 const isBaseRoute = computed(() => route.path === '/base' || route.path === '/base/')
+const isDriversPage = computed(() => route.path.startsWith('/base/drivers'))
+const isVehiclesPage = computed(() => route.path.startsWith('/base/vehicle'))
+const showActions = computed(() => isDriversPage.value || isVehiclesPage.value)
+
+const actionButtons = [
+  {
+    id: 'add',
+    label: 'Додати',
+    activeBgClass: 'bg-green-50/80 border-green-400',
+    activeTextClass: 'text-green-700',
+    icon: 'plus'
+  },
+  {
+    id: 'delete',
+    label: 'Видалити',
+    activeBgClass: 'bg-red-50/80 border-red-400',
+    activeTextClass: 'text-red-700',
+    icon: 'trash'
+  },
+  {
+    id: 'assign-route',
+    label: 'Призначити рейс',
+    activeBgClass: 'bg-blue-50/80 border-blue-400',
+    activeTextClass: 'text-blue-700',
+    icon: 'assign-route'
+  }
+]
+
+const handleAction = (btn: any) => {
+  if (isDriversPage.value) {
+    if (btn.id === 'add') {
+      driversStore.isAddDriverModalOpen = true
+    } else if (btn.id === 'delete') {
+      driversStore.isDeleteMode = !driversStore.isDeleteMode
+      driversStore.isAssignRouteMode = false
+    } else if (btn.id === 'assign-route') {
+      driversStore.isAssignRouteMode = !driversStore.isAssignRouteMode
+      driversStore.isDeleteMode = false
+    }
+  } else if (isVehiclesPage.value) {
+    if (btn.id === 'add') {
+      vehiclesStore.isAddVehicleModalOpen = true
+    } else if (btn.id === 'delete') {
+      vehiclesStore.isDeleteMode = !vehiclesStore.isDeleteMode
+      vehiclesStore.isAssignRouteMode = false
+    } else if (btn.id === 'assign-route') {
+      vehiclesStore.isAssignRouteMode = !vehiclesStore.isAssignRouteMode
+      vehiclesStore.isDeleteMode = false
+    }
+  }
+}
 
 const liquidSpring = {
   type: 'spring',
@@ -68,19 +132,18 @@ const textSpring = {
 <template>
   <div class="page-container min-h-screen flex flex-col bg-gray-50/50">
 
-    <nav class="flex flex-wrap justify-center items-center gap-3 p-4">
+    <nav class="flex flex-wrap justify-center items-center gap-3 p-4 fixed inset-x-0 z-100">
 
       <router-link
           to="/"
           class="flex flex-shrink-0 items-center justify-center w-11 h-11 rounded-full bg-white/80 backdrop-blur-md border border-gray-300 shadow-[0_8px_8px_rgba(31,38,135,0.04)] hover:bg-red-50 hover:border-red-300 hover:text-red-600 text-gray-700 transition-colors"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-        </svg>
+        <SvgIcon name="arrow-left" class="w-5 h-5" />
       </router-link>
 
+      <!-- Центральна частина: основне меню навігації -->
       <motion.div
-          class="flex items-center rounded-full backdrop-blur-xl"
+          class="flex flex-wrap items-center justify-center rounded-full backdrop-blur-xl"
           :animate="{
             marginTop: isBaseRoute ? 0 : -2,
             gap: isBaseRoute ? 24 : 4,
@@ -99,12 +162,12 @@ const textSpring = {
             :while-tap="{ scale: 0.94 }"
             :transition="liquidSpring"
             :style="{
-              padding: isBaseRoute ? '0px 4px' : '0 1px'
+              padding: isBaseRoute ? '2px 4px' : '0 1px'
             }"
         >
           <router-link
               :to="link.path"
-              class="relative flex items-center justify-center outline-none overflow-hidden backdrop-blur-md group transition duration-150 "
+              class="relative flex items-center justify-center outline-none overflow-hidden backdrop-blur-md group transition duration-750 "
               :class="[
                 route.path.includes(link.path)
                   ? link.activeTextClass
@@ -115,7 +178,7 @@ const textSpring = {
               }"
           >
             <motion.div
-                class="absolute inset-0 border transition duration-300 ease-in-out"
+                class="absolute inset-0 border transition duration-600 ease-in-out"
                 :class="[
                   route.path.includes(link.path)
                     ? `${link.activeBgClass} shadow-sm`
@@ -138,13 +201,7 @@ const textSpring = {
                 :transition="liquidSpring"
             >
               <div class="flex items-center justify-center w-5 h-5 flex-shrink-0">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    :viewBox="link.viewBox"
-                    fill="currentColor"
-                    class="w-5 h-5 flex-shrink-0"
-                    v-html="link.iconPath"
-                ></svg>
+                <SvgIcon :name="link.icon" class="w-5 h-5 flex-shrink-0" />
               </div>
 
               <AnimatePresence>
@@ -162,12 +219,43 @@ const textSpring = {
         </motion.div>
       </motion.div>
 
+      <!-- Кнопки швидких дій для водіїв/ТЗ (плавний CSS слайд у центрі) -->
+      <div class="actions-wrapper flex-shrink-0" :class="{ 'active': showActions }">
+        <div class="flex items-center gap-2 rounded-full backdrop-blur-xl bg-white/55 border border-gray-200 shadow-[0_8px_8px_rgba(31,38,135,0.04)] p-1.5 z-50">
+          <button
+              v-for="btn in actionButtons"
+              :key="btn.id"
+              @click.stop="handleAction(btn)"
+              class="relative flex items-center justify-center w-8 h-8 rounded-full transition-all duration-400 group outline-none overflow-hidden"
+              :title="btn.label"
+              :class="[
+                (isDeleteMode && btn.id === 'delete') || (isAssignRouteMode && btn.id === 'assign-route')
+                  ? btn.activeTextClass
+                  : 'text-gray-600 hover:text-gray-900 hover:scale-105'
+              ]"
+          >
+            <div
+                class="absolute inset-0 border transition-colors duration-500 rounded-full pointer-events-none"
+                :class="[
+                  (isDeleteMode && btn.id === 'delete') || (isAssignRouteMode && btn.id === 'assign-route')
+                    ? `${btn.activeBgClass} shadow-sm border-gray-200`
+                    : 'border-transparent bg-transparent group-hover:bg-gray-200/50'
+                ]"
+            ></div>
+
+            <div class="relative z-10 flex items-center justify-center pointer-events-none">
+              <SvgIcon :name="btn.icon" class="w-4 h-4 flex-shrink-0" />
+            </div>
+          </button>
+        </div>
+      </div>
+
     </nav>
 
-    <div :class="isBaseRoute ? 'flex-1 flex flex-col justify-center items-center pb-20' : 'p-6 flex justify-center'">
+    <div :class="isBaseRoute ? 'flex-1 flex flex-col justify-center items-center pb-20 mt-20' : 'p-6 flex justify-center'">
 
       <template v-if="isBaseRoute">
-        <h2 class="text-center text-3xl font-semibold font-sans mb-2">Інформаційна база</h2>
+        <h2 class="text-center text-3xl font-semibold font-sans mb-6">Інформаційна база</h2>
         <p class="text-gray-500 text-sm mb-8 text-center max-w-md">
           Виберіть потрібний розділ у меню вище для початку роботи з базою даних.
         </p>
@@ -194,5 +282,26 @@ const textSpring = {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+.actions-wrapper {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  max-width: 0;
+  opacity: 0;
+  width: max-content;
+  transform: scale(0.95);
+  pointer-events: none;
+  transition: max-width 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+              opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1),
+              transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.actions-wrapper.active {
+  max-width: 180px;
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto !important;
 }
 </style>
