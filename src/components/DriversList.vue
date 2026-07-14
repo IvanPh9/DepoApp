@@ -420,20 +420,24 @@ const statusDotClass = computed(() => {
     >
       <div v-if="isAssignModalOpen" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
         <div class="bg-white rounded-[2rem] w-full max-w-md p-6 shadow-2xl border border-gray-100 transform transition-all">
-          <div class="flex items-center justify-between pb-4 mb-4 border-b border-gray-100">
-            <h3 class="text-lg font-semibold text-gray-800">Призначити маршрут</h3>
-            <button @click="closeAssignModal" class="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-full hover:bg-gray-50">
+          <div class="flex items-start justify-between pb-6 mb-6 border-b border-gray-100 relative">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center border border-blue-100">
+                <SvgIcon name="assign-route" class="w-7 h-7" />
+              </div>
+              <div>
+                <h3 class="text-2xl font-semibold text-gray-800">Призначити маршрут</h3>
+                <p class="text-sm text-gray-500">Водій: <span class="font-medium text-gray-700">{{ selectedDriver?.name }} {{ selectedDriver?.surname }}</span></p>
+              </div>
+            </div>
+            <button @click="closeAssignModal" class="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-full hover:bg-gray-50 absolute right-0 top-0">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
               </svg>
             </button>
           </div>
 
-          <div v-if="selectedDriver" class="mb-4">
-            <p class="text-sm text-gray-500">Водій: <span class="font-semibold text-gray-700">{{ selectedDriver.name }} {{ selectedDriver.surname }}</span></p>
-          </div>
-
-          <div class="space-y-2 mb-4">
+          <div class="space-y-2 mb-6">
             <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider pl-1">Швидкий вибір рейсу</label>
             <div class="flex flex-wrap gap-2">
               <button 
@@ -449,27 +453,30 @@ const statusDotClass = computed(() => {
             </div>
           </div>
 
-          <div class="space-y-1.5 mb-6">
-            <label class="text-sm font-medium text-gray-700 pl-1">Або введіть назву вручну</label>
+          <div class="space-y-1.5 mb-8">
+            <label class="text-sm font-medium text-gray-700 pl-1">Або введіть назву вручну <span class="text-red-500">*</span></label>
             <input 
                 v-model="inputRouteName" 
                 type="text" 
                 placeholder="Наприклад: Рейс 14"
-                class="w-full bg-[#F8FAFC] border border-gray-200 text-gray-800 text-sm rounded-xl px-4 py-2.5 outline-none focus:bg-white focus:border-blue-400 focus:ring-4 focus:ring-blue-50 transition-all"
+                class="w-full bg-[#F8FAFC] border border-gray-200 text-gray-800 text-sm rounded-2xl px-4 py-3 outline-none focus:bg-white focus:border-blue-400 focus:ring-4 focus:ring-blue-50 transition-all"
                 required
             >
           </div>
 
-          <div class="flex gap-3 justify-end">
-            <button @click="closeAssignModal" class="px-5 py-2.5 rounded-xl text-gray-600 bg-gray-50 hover:bg-gray-100 font-medium transition-colors text-sm">
+          <div class="pt-6 border-t border-gray-100 flex flex-col sm:flex-row gap-3 justify-end">
+            <button
+                @click="closeAssignModal"
+                class="px-6 py-3 rounded-2xl text-gray-600 bg-gray-50 hover:bg-gray-100 font-medium transition-colors border border-transparent hover:border-gray-200 text-sm"
+            >
               Скасувати
             </button>
             <button 
                 @click="saveRouteAssignment" 
                 :disabled="!inputRouteName.trim()"
-                class="px-6 py-2.5 rounded-xl text-white bg-blue-600 hover:bg-blue-700 font-medium transition-colors text-sm shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                class="px-8 py-3 rounded-2xl text-white bg-blue-600 hover:bg-blue-700 font-medium shadow-[0_8px_16px_rgba(37,99,235,0.2)] hover:shadow-[0_8px_20px_rgba(37,99,235,0.3)] hover:-translate-y-0.5 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-[0_8px_16px_rgba(37,99,235,0.2)]"
             >
-              Зберегти
+              Призначити
             </button>
           </div>
         </div>
@@ -606,37 +613,24 @@ const statusDotClass = computed(() => {
         leave-to-class="opacity-0 scale-95"
     >
       <div v-if="isDeleteConfirmModalOpen" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-        <div class="bg-white rounded-[2rem] w-full max-w-md p-6 shadow-2xl border border-gray-100 transform transition-all">
-          
-          <div class="flex items-center justify-between pb-4 mb-4 border-b border-gray-100">
-            <h3 class="text-lg font-semibold text-gray-800">Видалити водія?</h3>
-            <button @click="closeDeleteConfirmModal" class="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-full hover:bg-gray-50">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-              </svg>
-            </button>
+        <div class="bg-white rounded-[2rem] w-full max-w-sm p-6 shadow-2xl border border-gray-100 transform transition-all text-center">
+          <div class="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-100">
+            <SvgIcon name="trash" class="w-7 h-7" />
           </div>
 
-          <div v-if="selectedDriverForDelete" class="mb-6">
-            <p class="text-sm text-gray-500">
-              Ви впевнені, що хочете видалити водія 
-              <span class="font-semibold text-gray-700">{{ selectedDriverForDelete.name }} {{ selectedDriverForDelete.surname }}</span>? 
-              Цю дію не можна буде скасувати.
-            </p>
-          </div>
+          <h3 class="text-xl font-bold text-gray-800 mb-2">Видалити водія?</h3>
+          <p class="text-sm text-gray-500 mb-6 leading-relaxed">
+            Ви дійсно бажаєте видалити водія <span class="font-semibold text-gray-700">{{ selectedDriverForDelete?.name }} {{ selectedDriverForDelete?.surname }}</span>? Цю дію не можна буде скасувати.
+          </p>
 
-          <div class="flex gap-3 justify-end">
-            <button @click="closeDeleteConfirmModal" class="px-5 py-2.5 rounded-xl text-gray-600 bg-gray-50 hover:bg-gray-100 font-medium transition-colors text-sm">
+          <div class="flex gap-3 justify-center">
+            <button @click="closeDeleteConfirmModal" class="px-5 py-2.5 rounded-xl text-gray-600 bg-gray-50 hover:bg-gray-100 font-medium transition-colors text-sm flex-1">
               Скасувати
             </button>
-            <button 
-                @click="confirmDeleteDriver" 
-                class="px-6 py-2.5 rounded-xl text-white bg-red-600 hover:bg-red-700 font-medium transition-colors text-sm shadow-sm"
-            >
+            <button @click="confirmDeleteDriver" class="px-5 py-2.5 rounded-xl text-white bg-red-600 hover:bg-red-700 font-medium transition-colors text-sm flex-1 shadow-sm shadow-red-200">
               Видалити
             </button>
           </div>
-
         </div>
       </div>
     </transition>

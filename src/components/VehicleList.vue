@@ -360,7 +360,7 @@ const saveEditedVehicle = () => {
         <div class="relative">
           <button @click="isSortMenuOpen = !isSortMenuOpen; isStatusMenuOpen = false; isTypeMenuOpen = false"
                   class="w-9 h-9 rounded-full bg-white border flex items-center justify-center transition-colors shadow-sm"
-                  :class="currentSort !== 'default' ? 'border-sky-300 text-sky-600 bg-sky-50' : 'border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-sky-600'"
+                  :class="currentSort !== 'default' ? 'border-gray-200 text-gray-600 bg-sky-50' : 'border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-sky-600'"
                   title="Сортувати">
             <SvgIcon name="sort" class="w-4 h-4" />
           </button>
@@ -392,7 +392,7 @@ const saveEditedVehicle = () => {
         <div class="relative">
           <button @click="isStatusMenuOpen = !isStatusMenuOpen; isSortMenuOpen = false; isTypeMenuOpen = false"
                   class="h-9 px-4 rounded-full bg-white border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 flex items-center gap-2 transition-colors shadow-sm"
-                  :class="{ 'border-sky-300 text-sky-600 bg-sky-50': currentStatus !== 'all' }">
+                  :class="{ 'border-gray-200 text-gray-600 bg-sky-50': currentStatus !== 'all' }">
             <div class="w-2 h-2 rounded-full transition-colors" :class="statusDotClass"></div>
             <span>{{ statusLabel }}</span>
             <SvgIcon name="chevron-down" class="w-4 h-4 text-gray-400 transition-transform duration-200" :class="isStatusMenuOpen ? 'rotate-180' : ''" />
@@ -429,7 +429,7 @@ const saveEditedVehicle = () => {
         <div class="relative">
           <button @click="isTypeMenuOpen = !isTypeMenuOpen; isSortMenuOpen = false; isStatusMenuOpen = false"
                   class="h-9 px-4 rounded-full bg-white border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 flex items-center gap-2 transition-colors shadow-sm"
-                  :class="{ 'border-sky-300 text-sky-600 bg-sky-50': currentType !== 'all' }">
+                  :class="{ 'border-gray-200 text-gray-600 bg-sky-50': currentType !== 'all' }">
             <div class="w-2 h-2 rounded-full transition-colors" :class="typeDotClass"></div>
             <span>{{ typeLabel }}</span>
             <SvgIcon name="chevron-down" class="w-4 h-4 text-gray-400 transition-transform duration-200" :class="isTypeMenuOpen ? 'rotate-180' : ''" />
@@ -572,20 +572,24 @@ const saveEditedVehicle = () => {
     >
       <div v-if="isAssignModalOpen" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
         <div class="bg-white rounded-[2rem] w-full max-w-md p-6 shadow-2xl border border-gray-100 transform transition-all">
-          <div class="flex items-center justify-between pb-4 mb-4 border-b border-gray-100">
-            <h3 class="text-lg font-semibold text-gray-800">Призначити маршрут ТЗ</h3>
-            <button @click="closeAssignModal" class="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-full hover:bg-gray-50">
+          <div class="flex items-start justify-between pb-6 mb-6 border-b border-gray-100 relative">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 bg-sky-50 text-sky-600 rounded-full flex items-center justify-center border border-sky-100">
+                <SvgIcon name="assign-route" class="w-7 h-7" />
+              </div>
+              <div>
+                <h3 class="text-2xl font-semibold text-gray-800">Призначити маршрут</h3>
+                <p class="text-sm text-gray-500">ТЗ: <span class="font-medium text-gray-700">#{{ selectedVehicle?.boardNumber }} - {{ selectedVehicle?.model }}</span></p>
+              </div>
+            </div>
+            <button @click="closeAssignModal" class="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-full hover:bg-gray-50 absolute right-0 top-0">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
               </svg>
             </button>
           </div>
 
-          <div v-if="selectedVehicle" class="mb-4">
-            <p class="text-sm text-gray-500">Транспортний засіб: <span class="font-semibold text-gray-700">#{{ selectedVehicle.boardNumber }} - {{ selectedVehicle.model }}</span></p>
-          </div>
-
-          <div class="space-y-2 mb-4">
+          <div class="space-y-2 mb-6">
             <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider pl-1">Швидкий вибір рейсу</label>
             <div class="flex flex-wrap gap-2">
               <button 
@@ -601,27 +605,30 @@ const saveEditedVehicle = () => {
             </div>
           </div>
 
-          <div class="space-y-1.5 mb-6">
-            <label class="text-sm font-medium text-gray-700 pl-1">Або введіть назву вручну</label>
+          <div class="space-y-1.5 mb-8">
+            <label class="text-sm font-medium text-gray-700 pl-1">Або введіть назву вручну <span class="text-red-500">*</span></label>
             <input 
                 v-model="inputRouteName" 
                 type="text" 
                 placeholder="Наприклад: Рейс 14"
-                class="w-full bg-[#F8FAFC] border border-gray-200 text-gray-800 text-sm rounded-xl px-4 py-2.5 outline-none focus:bg-white focus:border-sky-400 focus:ring-4 focus:ring-sky-50 transition-all"
+                class="w-full bg-[#F8FAFC] border border-gray-200 text-gray-800 text-sm rounded-2xl px-4 py-3 outline-none focus:bg-white focus:border-sky-400 focus:ring-4 focus:ring-sky-50 transition-all"
                 required
             >
           </div>
 
-          <div class="flex gap-3 justify-end">
-            <button @click="closeAssignModal" class="px-5 py-2.5 rounded-xl text-gray-600 bg-gray-50 hover:bg-gray-100 font-medium transition-colors text-sm">
+          <div class="pt-6 border-t border-gray-100 flex flex-col sm:flex-row gap-3 justify-end">
+            <button
+                @click="closeAssignModal"
+                class="px-6 py-3 rounded-2xl text-gray-600 bg-gray-50 hover:bg-gray-100 font-medium transition-colors border border-transparent hover:border-gray-200 text-sm"
+            >
               Скасувати
             </button>
             <button 
                 @click="saveRouteAssignment" 
                 :disabled="!inputRouteName.trim()"
-                class="px-6 py-2.5 rounded-xl text-white bg-sky-600 hover:bg-sky-700 font-medium transition-colors text-sm shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                class="px-8 py-3 rounded-2xl text-white bg-sky-600 hover:bg-sky-700 font-medium shadow-[0_8px_16px_rgba(14,165,233,0.2)] hover:shadow-[0_8px_20px_rgba(14,165,233,0.3)] hover:-translate-y-0.5 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-[0_8px_16px_rgba(14,165,233,0.2)]"
             >
-              Зберегти
+              Призначити
             </button>
           </div>
         </div>
